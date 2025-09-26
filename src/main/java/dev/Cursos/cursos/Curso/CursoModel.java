@@ -29,4 +29,5 @@ public class CursoModel {
 
     @ManyToMany(mappedBy = "cursos")
     private List<UserModel> users;
+
 }
