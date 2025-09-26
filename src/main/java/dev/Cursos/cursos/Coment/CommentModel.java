@@ -1,6 +1,6 @@
 package dev.Cursos.cursos.Coment;
 
-import dev.Cursos.cursos.Post.Posts;
+import dev.Cursos.cursos.Post.PostsModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +20,5 @@ public class CommentModel {
     private String texto;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Posts post;
+    private PostsModel post;
 }
