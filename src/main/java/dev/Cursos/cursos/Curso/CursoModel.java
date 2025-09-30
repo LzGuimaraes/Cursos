@@ -1,5 +1,6 @@
 package dev.Cursos.cursos.Curso;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,8 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+
 import java.util.List;
 
+import dev.Cursos.cursos.Post.PostsModel;
 import dev.Cursos.cursos.User.UserModel;
 
 
@@ -29,5 +33,8 @@ public class CursoModel {
 
     @ManyToMany(mappedBy = "cursos")
     private List<UserModel> users;
+
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostsModel> posts;
 
 }

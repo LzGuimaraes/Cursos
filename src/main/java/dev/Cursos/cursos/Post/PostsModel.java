@@ -1,6 +1,7 @@
 package dev.Cursos.cursos.Post;
 
 import dev.Cursos.cursos.Coment.CommentModel;
+import dev.Cursos.cursos.Curso.CursoModel;
 import dev.Cursos.cursos.User.UserModel;
 
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -29,7 +32,12 @@ public class PostsModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserModel user;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentModel> comments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "curso_id")
+    private CursoModel curso;
 }
