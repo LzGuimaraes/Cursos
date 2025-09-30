@@ -14,6 +14,8 @@ import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.Cursos.cursos.Post.PostsModel;
 import dev.Cursos.cursos.User.UserModel;
 
@@ -30,10 +32,12 @@ public class CursoModel {
     private String nome;
     private String estado;
     private String descricao;
-
+    
+    @JsonIgnore
     @ManyToMany(mappedBy = "cursos")
     private List<UserModel> users;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostsModel> posts;
 
