@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tb_posts")
-public class PostsModel {
+public class PostModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

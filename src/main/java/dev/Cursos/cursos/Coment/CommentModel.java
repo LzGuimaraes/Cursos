@@ -2,7 +2,7 @@ package dev.Cursos.cursos.Coment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import dev.Cursos.cursos.Post.PostsModel;
+import dev.Cursos.cursos.Post.PostModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +23,5 @@ public class CommentModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @JsonIgnore
-    private PostsModel post;
+    private PostModel post;
 }
