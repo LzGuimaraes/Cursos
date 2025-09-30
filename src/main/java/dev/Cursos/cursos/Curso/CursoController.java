@@ -1,5 +1,7 @@
 package dev.Cursos.cursos.Curso;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/curso")
 public class CursoController {
+    private CursoService cursoService;
 
+    public CursoController(CursoService cursoService) {
+        this.cursoService = cursoService;
+    }
+
+    
     @GetMapping("/all")
-    public String getCurso() {
-        return "List of Curso";
+    public List<CursoModel> getCurso() {
+        return cursoService.getCurso();
     }
 
     @GetMapping("/all/{id}")
