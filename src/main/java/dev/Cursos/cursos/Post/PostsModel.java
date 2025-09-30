@@ -39,5 +39,6 @@ public class PostsModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curso_id")
+    @JsonIgnore
     private CursoModel curso;
 }

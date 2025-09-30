@@ -1,5 +1,7 @@
 package dev.Cursos.cursos.Coment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.Cursos.cursos.Post.PostsModel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,5 +22,6 @@ public class CommentModel {
     private String texto;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private PostsModel post;
 }
