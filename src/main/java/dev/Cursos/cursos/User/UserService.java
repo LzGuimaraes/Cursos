@@ -20,4 +20,17 @@ public class UserService {
         Optional<UserModel> user = userRepository.findById(id);
         return user.orElse(null);
     }
+    public UserModel createUser(UserModel user) {
+        return userRepository.save(user);
+    }
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+    public UserModel alterUser(Long id, UserModel updatedUser) {
+        if (userRepository.existsById(id)) {
+            updatedUser.setId_user(id);
+            return userRepository.save(updatedUser);
+        }
+        return null;
+    }
 }

@@ -18,4 +18,17 @@ public class PostService {
         Optional<PostModel> post = postRepository.findById(id);
         return post.orElse(null);
     }
+    public PostModel createPost(PostModel post){
+        return postRepository.save(post);
+    }
+    public void deletePost(Long id){
+        postRepository.deleteById(id);
+    }
+    public PostModel alterPost(Long id, PostModel updatedPost){
+        if(postRepository.existsById(id)){
+            updatedPost.setId_post(id);
+            return postRepository.save(updatedPost);
+        }
+        return null;
+    }
 }

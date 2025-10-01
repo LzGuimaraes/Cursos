@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,16 +31,16 @@ public class PostController {
     }
 
     @PostMapping("create")
-    public String createPost() {
-        return "Post created: ";
+    public PostModel createPost(@RequestBody PostModel post) {
+        return postService.createPost(post);
     }
 
     @PutMapping("alter/{id}")
-    public String alterPost() {
-        return "Post altered: ";
+    public PostModel alterPost(@PathVariable Long id, @RequestBody PostModel updatedPost) {
+        return postService.alterPost(id, updatedPost);
     }
     @DeleteMapping("delete/{id}")
-    public String deletePost() {
-        return "Post deleted: ";
+    public void deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
     }
 }

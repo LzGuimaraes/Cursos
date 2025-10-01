@@ -3,6 +3,7 @@ package dev.Cursos.cursos.User;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import dev.Cursos.cursos.Curso.CursoModel;
 import jakarta.persistence.Column;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "tb_user")
 public class UserModel {
     @Id

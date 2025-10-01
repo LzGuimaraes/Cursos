@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,6 @@ public class CursoController {
         this.cursoService = cursoService;
     }
 
-    
     @GetMapping("/all")
     public List<CursoModel> getCurso() {
         return cursoService.getCurso();
@@ -32,17 +32,17 @@ public class CursoController {
     }
 
     @PostMapping("create")
-    public String createCurso() {
-        return "Curso created: ";
+    public CursoModel createCurso(@RequestBody CursoModel curso) {
+        return cursoService.createCurso(curso);
     }
 
     @PutMapping("alter/{id}")
-    public String alterCurso() {
-        return "Curso altered: ";
+    public CursoModel alterCurso(@RequestBody Long id, @RequestBody CursoModel updatedCurso) {
+        return cursoService.alterCurso(id, updatedCurso);
     }
     @DeleteMapping("delete/{id}")
-    public String deleteCurso() {
-        return "Curso deleted: ";
+    public void deleteCurso(@PathVariable Long id) {
+        cursoService.deleteCurso(id);
     }
 
 }

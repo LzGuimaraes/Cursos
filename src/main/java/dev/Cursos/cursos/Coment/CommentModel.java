@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import dev.Cursos.cursos.Post.PostModel;
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tb_comments")
@@ -19,7 +17,7 @@ public class CommentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_comment;
-    private String texto;
+    private String descricao;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @JsonIgnore

@@ -19,4 +19,18 @@ public class CommentService {
         Optional<CommentModel> comment = commentRepository.findById(id);
         return comment.orElse(null);
     }
+    public CommentModel createComment(CommentModel comment){
+        return commentRepository.save(comment);
+    }
+    public void deleteComment(Long id, CommentModel newComment){
+        commentRepository.deleteById(id);
+    }
+    public CommentModel alterComment(Long id, CommentModel commentAtualizado){
+        if(commentRepository.existsById(id)){
+            commentAtualizado.setId_comment(id);
+            return commentRepository.save(commentAtualizado);
+        }
+        return null;
+    }
+
 }
