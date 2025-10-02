@@ -23,22 +23,22 @@ public class CommentController {
     }
 
    @GetMapping("/all")
-    public List<CommentModel> getAllComment() {
+    public List<CommentDTO> getAllComment() {
         return commentService.getAllComment();
     }
 
     @GetMapping("/all/{id}")
-    public CommentModel getCommentById(@PathVariable Long id) {
+    public CommentDTO getCommentById(@PathVariable Long id) {
         return commentService.getCommentById(id);
     }
 
     @PostMapping("create")
-    public CommentModel createComment(@RequestBody CommentModel comment) {
+    public CommentDTO createComment(@RequestBody CommentDTO comment) {
         return commentService.createComment(comment);
     }
 
     @PutMapping("alter/{id}")
-    public CommentModel alterComment(@PathVariable Long id, @RequestBody CommentModel commentAtualizado) {
+    public CommentDTO alterComment(@PathVariable Long id, @RequestBody CommentDTO commentAtualizado) {
         return commentService.alterComment(id, commentAtualizado);
     }
 
