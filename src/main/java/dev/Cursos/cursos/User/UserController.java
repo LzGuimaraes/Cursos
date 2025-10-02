@@ -22,7 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @GetMapping("/all")
     public List<UserModel> getUser() {
         return userService.getAllUsers();
@@ -42,6 +41,7 @@ public class UserController {
     public UserModel alterUser(@PathVariable Long id, @RequestBody UserModel updatedUser) {
         return userService.alterUser(id, updatedUser);
     }
+    
     @DeleteMapping("delete/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
