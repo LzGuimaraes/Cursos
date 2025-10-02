@@ -22,22 +22,22 @@ public class CursoController {
     }
 
     @GetMapping("/all")
-    public List<CursoModel> getCurso() {
+    public List<CursoDTO> getCurso() {
         return cursoService.getCurso();
     }
 
     @GetMapping("/all/{id}")
-    public CursoModel getCursoById(@PathVariable Long id) {
+    public CursoDTO getCursoById(@PathVariable Long id) {
         return cursoService.getCursoById(id);
     }
 
     @PostMapping("create")
-    public CursoModel createCurso(@RequestBody CursoModel curso) {
+    public CursoDTO createCurso(@RequestBody CursoDTO curso) {
         return cursoService.createCurso(curso);
     }
 
     @PutMapping("alter/{id}")
-    public CursoModel alterCurso(@RequestBody Long id, @RequestBody CursoModel updatedCurso) {
+    public CursoDTO alterCurso(@RequestBody Long id, @RequestBody CursoDTO updatedCurso) {
         return cursoService.alterCurso(id, updatedCurso);
     }
     @DeleteMapping("delete/{id}")
