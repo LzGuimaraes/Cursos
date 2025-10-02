@@ -16,27 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/Post")
 public class PostController {
     private PostService postService;
+    
     public PostController(PostService postService) {
         this.postService = postService;
     }
 
     @GetMapping("/all")
-    public List<PostModel> getAllPost() {
+    public List<PostDTO> getAllPost() {
         return postService.getAllPost();
     }
 
     @GetMapping("/all/{id}")
-    public PostModel getPostById(@PathVariable Long id) {
+    public PostDTO getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
 
     @PostMapping("create")
-    public PostModel createPost(@RequestBody PostModel post) {
+    public PostDTO createPost(@RequestBody PostDTO post) {
         return postService.createPost(post);
     }
 
     @PutMapping("alter/{id}")
-    public PostModel alterPost(@PathVariable Long id, @RequestBody PostModel updatedPost) {
+    public PostDTO alterPost(@PathVariable Long id, @RequestBody PostDTO updatedPost) {
         return postService.alterPost(id, updatedPost);
     }
     @DeleteMapping("delete/{id}")

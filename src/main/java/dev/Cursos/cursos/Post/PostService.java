@@ -2,32 +2,44 @@ package dev.Cursos.cursos.Post;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class PostService {
     private PostRepository postRepository;
-    public PostService(PostRepository postRepository) {
+    private PostMapper postMapper;
+
+    public PostService(PostRepository postRepository, PostMapper postMapper) {
         this.postRepository = postRepository;
+        this.postMapper = postMapper;
     }
-    public List<PostModel> getAllPost(){
-        return postRepository.findAll();
+
+    public List<PostDTO> getAllPost(){
+        List<PostModel> posts = postRepository.findAll();        
+        return posts.stream().map(postMapper::map).collect(Collectors.toList());
     }
-    public PostModel getPostById(Long id){
-        Optional<PostModel> post = postRepository.findById(id);
-        return post.orElse(null);
+
+    public PostDTO getPostById(Long id){
+        Optional<PostModel> postById = postRepository.findById(id);
+        return postById.map(postMapper::map).orElse(null);
     }
-    public PostModel createPost(PostModel post){
-        return postRepository.save(post);
+    public PostDTO createPost(PostDTO postDTO){
+        PostModel postModel = postMapper.map(postDTO);
+        postModel = postRepository.save(postModel);
+        return postMapper.map(postModel);
     }
     public void deletePost(Long id){
         postRepository.deleteById(id);
     }
-    public PostModel alterPost(Long id, PostModel updatedPost){
-        if(postRepository.existsById(id)){
-            updatedPost.setId_post(id);
-            return postRepository.save(updatedPost);
+    public PostDTO alterPost(Long id, PostDTO postDTO){
+        Optional<PostModel> existingPost = postRepository.findById(id);
+        if (existingPost.isPresent()) {
+            PostModel postUpdated = postMapper.map(postDTO);
+            postUpdated.setId_post(id);
+            PostModel postSaved = postRepository.save(postUpdated);
+            return postMapper.map(postSaved);
         }
         return null;
     }
