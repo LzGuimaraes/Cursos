@@ -1,25 +1,28 @@
 package dev.Cursos.cursos.User;
 
 import org.springframework.stereotype.Component;
+import dev.Cursos.cursos.User.dto.UserRequestDTO;
+import dev.Cursos.cursos.User.dto.UserResponseDTO;
 
 @Component
 public class UserMapper {
-    public UserModel map(UserDTO userDTO) {
-        UserModel userModel = new UserModel();
-        userModel.setNome(userDTO.getNome());
-        userModel.setIdade(userDTO.getIdade());
-        userModel.setEmail(userDTO.getEmail());
-        userModel.setPassword(userDTO.getPassword());
-        return userModel;
+
+    public UserModel toModel(UserRequestDTO dto) {
+        UserModel model = new UserModel();
+        model.setNome(dto.nome());
+        model.setIdade(dto.idade());
+        model.setEmail(dto.email());
+        model.setPassword(dto.password());
+        return model;
     }
 
-    public UserDTO map(UserModel userModel) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId_user(userModel.getId_user());
-        userDTO.setNome(userModel.getNome());
-        userDTO.setIdade(userModel.getIdade());
-        userDTO.setEmail(userModel.getEmail());
-        userDTO.setPassword(userModel.getPassword());
-        return userDTO;
+    public UserResponseDTO toResponse(UserModel model) {
+        return new UserResponseDTO(
+            model.getId_user(),
+            model.getNome(),
+            model.getIdade(),
+            model.getEmail(),
+            model.getCursos()
+        );
     }
 }

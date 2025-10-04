@@ -3,6 +3,9 @@ package dev.Cursos.cursos.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.Cursos.cursos.User.dto.UserRequestDTO;
+import dev.Cursos.cursos.User.dto.UserResponseDTO;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private UserService userService;
 
@@ -23,22 +26,22 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<UserDTO> getUser() {
+    public List<UserResponseDTO> getUser() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/all/{id}")
-    public UserDTO getUsersById(@PathVariable Long id) {
+    public UserResponseDTO getUsersById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @PostMapping("create")
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+    public UserResponseDTO createUser(@RequestBody UserRequestDTO userDTO) {
         return userService.createUser(userDTO);
     }
 
     @PutMapping("alter/{id}")
-    public UserDTO alterUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
+    public UserResponseDTO alterUser(@PathVariable Long id, @RequestBody UserRequestDTO updatedUser) {
         return userService.alterUser(id, updatedUser);
     }
     

@@ -1,10 +1,10 @@
 package dev.Cursos.cursos.User;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+
+import dev.Cursos.cursos.User.dto.UserRequestDTO;
+import dev.Cursos.cursos.User.dto.UserResponseDTO;
 
 @Service
 public class UserService {
@@ -16,30 +16,36 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public List<UserDTO> getAllUsers() {
-        List<UserModel> users = userRepository.findAll();
-        return users.stream().map(userMapper::map).collect(Collectors.toList());
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
-    public UserDTO getUserById(Long id) {
-        Optional<UserModel> userById = userRepository.findById(id);
-        return userById.map(userMapper::map).orElse(null);
+
+    public UserResponseDTO getUserById(Long id) {
+       return userRepository.findById(id)
+                .map(userMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
-    public UserDTO createUser(UserDTO userDTO) {
-        UserModel userModel = userMapper.map(userDTO);
-        userModel = userRepository.save(userModel);
-        return userMapper.map(userModel);
+    public UserResponseDTO createUser(UserRequestDTO dto) {
+        UserModel model = userMapper.toModel(dto);
+        UserModel saved = userRepository.save(model);
+        return userMapper.toResponse(saved);
     }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    public UserDTO alterUser(Long id, UserDTO userDTO) {
-        Optional<UserModel> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            UserModel userUpdated = userMapper.map(userDTO);
-            userUpdated.setId_user(id);
-            UserModel userSaved = userRepository.save(userUpdated);
-            return userMapper.map(userSaved);
-        }
-    return null;
+    public UserResponseDTO alterUser(Long id, UserRequestDTO dto) {
+        UserModel existing = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        existing.setNome(dto.nome());
+        existing.setIdade(dto.idade());
+        existing.setEmail(dto.email());
+        existing.setPassword(dto.password());
+
+        UserModel updated = userRepository.save(existing);
+        return userMapper.toResponse(updated);
     }
 }
