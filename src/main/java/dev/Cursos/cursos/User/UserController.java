@@ -5,9 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.Cursos.cursos.User.dto.UserRequestDTO;
 import dev.Cursos.cursos.User.dto.UserResponseDTO;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,12 +39,13 @@ public class UserController {
     }
 
     @PostMapping("create")
-    public UserResponseDTO createUser(@RequestBody UserRequestDTO userDTO) {
-        return userService.createUser(userDTO);
+    public ResponseEntity<UserResponseDTO>  createUser(@Valid @RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO createdUser = userService.createUser(userDTO);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("alter/{id}")
-    public UserResponseDTO alterUser(@PathVariable Long id, @RequestBody UserRequestDTO updatedUser) {
+    public UserResponseDTO alterUser(@PathVariable Long id,@Valid @RequestBody UserRequestDTO updatedUser) {
         return userService.alterUser(id, updatedUser);
     }
     
