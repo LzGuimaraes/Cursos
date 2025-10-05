@@ -11,7 +11,7 @@ CREATE TABLE tb_user (
 CREATE TABLE tb_curso (
     id_curso BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255),
-    estado VARCHAR(255),
+    status VARCHAR(255) NOT NULL CHECK (status IN ('ATIVO', 'INATIVO', 'EM_BREVE')),
     descricao TEXT
 );
 

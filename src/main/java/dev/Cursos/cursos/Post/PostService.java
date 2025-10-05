@@ -1,46 +1,51 @@
 package dev.Cursos.cursos.Post;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import dev.Cursos.cursos.Curso.CursoModel;
+import dev.Cursos.cursos.Curso.CursoRepository;
+import dev.Cursos.cursos.Post.dto.PostRequestDTO;
+import dev.Cursos.cursos.Post.dto.PostResponseDTO;
+
 @Service
 public class PostService {
+
     private PostRepository postRepository;
+    private CursoRepository cursoRepository;
     private PostMapper postMapper;
 
-    public PostService(PostRepository postRepository, PostMapper postMapper) {
+    public PostService(PostRepository postRepository, CursoRepository cursoRepository, PostMapper postMapper) {
         this.postRepository = postRepository;
+        this.cursoRepository = cursoRepository;
         this.postMapper = postMapper;
     }
 
-    public List<PostDTO> getAllPost(){
-        List<PostModel> posts = postRepository.findAll();        
-        return posts.stream().map(postMapper::map).collect(Collectors.toList());
+    public List<PostResponseDTO> getAllPosts() {
+        return postRepository.findAll()
+                .stream()
+                .map(postMapper::toResponse)
+                .toList();
     }
 
-    public PostDTO getPostById(Long id){
-        Optional<PostModel> postById = postRepository.findById(id);
-        return postById.map(postMapper::map).orElse(null);
+    public PostResponseDTO getPostById(Long id) {
+        return postRepository.findById(id)
+                .map(postMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Post não encontrado."));
     }
-    public PostDTO createPost(PostDTO postDTO){
-        PostModel postModel = postMapper.map(postDTO);
-        postModel = postRepository.save(postModel);
-        return postMapper.map(postModel);
+
+    public PostResponseDTO createPost(PostRequestDTO dto) {
+        CursoModel curso = cursoRepository.findById(dto.cursoId())
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado."));
+
+        PostModel post = postMapper.toModel(dto, curso);
+        PostModel saved = postRepository.save(post);
+
+        return postMapper.toResponse(saved);
     }
-    public void deletePost(Long id){
+
+    public void deletePost(Long id) {
         postRepository.deleteById(id);
-    }
-    public PostDTO alterPost(Long id, PostDTO postDTO){
-        Optional<PostModel> existingPost = postRepository.findById(id);
-        if (existingPost.isPresent()) {
-            PostModel postUpdated = postMapper.map(postDTO);
-            postUpdated.setId_post(id);
-            PostModel postSaved = postRepository.save(postUpdated);
-            return postMapper.map(postSaved);
-        }
-        return null;
     }
 }

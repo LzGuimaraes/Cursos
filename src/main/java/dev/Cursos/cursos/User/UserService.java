@@ -1,45 +1,82 @@
 package dev.Cursos.cursos.User;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+
+import dev.Cursos.cursos.Curso.CursoModel;
+import dev.Cursos.cursos.Curso.CursoRepository;
+import dev.Cursos.cursos.User.dto.UserPatchDTO;
+import dev.Cursos.cursos.User.dto.UserRequestDTO;
+import dev.Cursos.cursos.User.dto.UserResponseDTO;
 
 @Service
 public class UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
+    private CursoRepository cursoRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, CursoRepository cursoRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.cursoRepository = cursoRepository;
     }
 
-    public List<UserDTO> getAllUsers() {
-        List<UserModel> users = userRepository.findAll();
-        return users.stream().map(userMapper::map).collect(Collectors.toList());
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
-    public UserDTO getUserById(Long id) {
-        Optional<UserModel> userById = userRepository.findById(id);
-        return userById.map(userMapper::map).orElse(null);
+
+    public UserResponseDTO getUserById(Long id) {
+       return userRepository.findById(id)
+                .map(userMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
-    public UserDTO createUser(UserDTO userDTO) {
-        UserModel userModel = userMapper.map(userDTO);
-        userModel = userRepository.save(userModel);
-        return userMapper.map(userModel);
+    public UserResponseDTO createUser(UserRequestDTO dto) {
+    UserModel user = userMapper.toModel(dto);
+
+    if (dto.cursoIds() != null && !dto.cursoIds().isEmpty()) {
+        List<CursoModel> cursos = cursoRepository.findAllById(dto.cursoIds());
+        user.setCursos(cursos);
+
+        for (CursoModel curso : cursos) {
+            if (!curso.getUsers().contains(user)) {
+                curso.getUsers().add(user);
+            }
+        }
     }
+    UserModel saved = userRepository.save(user);
+
+    return userMapper.toResponse(saved);
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    public UserDTO alterUser(Long id, UserDTO userDTO) {
-        Optional<UserModel> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            UserModel userUpdated = userMapper.map(userDTO);
-            userUpdated.setId_user(id);
-            UserModel userSaved = userRepository.save(userUpdated);
-            return userMapper.map(userSaved);
+
+    public UserResponseDTO patchUser(Long id, UserPatchDTO dto) {
+        UserModel existing = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    
+    if (dto.nome() != null) existing.setNome(dto.nome());
+    if (dto.idade() != null) existing.setIdade(dto.idade());
+    if (dto.email() != null) existing.setEmail(dto.email());
+    if (dto.password() != null) existing.setPassword(dto.password());
+
+    if (dto.cursoIds() != null && !dto.cursoIds().isEmpty()) {
+        List<CursoModel> cursos = cursoRepository.findAllById(dto.cursoIds());
+        existing.setCursos(cursos);
+
+        for (CursoModel curso : cursos) {
+            if (!curso.getUsers().contains(existing)) {
+                curso.getUsers().add(existing);
+            }
         }
-    return null;
     }
+
+    UserModel updated = userRepository.save(existing);
+    return userMapper.toResponse(updated);
+}
+
 }

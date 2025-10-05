@@ -1,21 +1,24 @@
 package dev.Cursos.cursos.Coment;
 
 import org.springframework.stereotype.Component;
+import dev.Cursos.cursos.Coment.dto.*;
+import dev.Cursos.cursos.Post.PostModel;
 
 @Component
 public class CommentMapper {
-    public CommentModel map(CommentDTO commentDTO) {
-        CommentModel commentModel = new CommentModel();
-        commentModel.setDescricao(commentDTO.getDescricao());
-        commentModel.setPost(commentDTO.getPost());
-        return commentModel;
+
+    public CommentModel toModel(CommentRequestDTO dto, PostModel post) {
+        CommentModel comment = new CommentModel();
+        comment.setDescricao(dto.descricao());
+        comment.setPost(post);
+        return comment;
     }
 
-    public CommentDTO map(CommentModel commentModel) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setId_comment(commentModel.getId_comment());
-        commentDTO.setDescricao(commentModel.getDescricao());
-        commentDTO.setPost(commentModel.getPost());
-        return commentDTO;
+    public CommentResponseDTO toResponse(CommentModel model) {
+        return new CommentResponseDTO(
+            model.getId_comment(),
+            model.getDescricao(),
+            model.getPost().getId_post()
+        );
     }
 }

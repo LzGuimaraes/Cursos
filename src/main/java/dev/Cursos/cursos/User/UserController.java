@@ -3,18 +3,24 @@ package dev.Cursos.cursos.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import dev.Cursos.cursos.User.dto.UserPatchDTO;
+import dev.Cursos.cursos.User.dto.UserRequestDTO;
+import dev.Cursos.cursos.User.dto.UserResponseDTO;
+import jakarta.validation.Valid;
 
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private UserService userService;
 
@@ -23,28 +29,30 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<UserDTO> getUser() {
+    public List<UserResponseDTO> getUser() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/all/{id}")
-    public UserDTO getUsersById(@PathVariable Long id) {
+    public UserResponseDTO getUsersById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @PostMapping("create")
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
-        return userService.createUser(userDTO);
+    public ResponseEntity<UserResponseDTO>  createUser(@Valid @RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO createdUser = userService.createUser(userDTO);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("alter/{id}")
-    public UserDTO alterUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
-        return userService.alterUser(id, updatedUser);
-    }
+    @PatchMapping("alter/{id}")
+    public UserResponseDTO patchUser(
+        @PathVariable Long id,
+        @RequestBody UserPatchDTO dto) {
+    return userService.patchUser(id, dto);
+}
     
     @DeleteMapping("delete/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
-    
 }
