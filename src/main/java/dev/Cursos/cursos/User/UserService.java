@@ -3,6 +3,8 @@ package dev.Cursos.cursos.User;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+import dev.Cursos.cursos.Curso.CursoModel;
+import dev.Cursos.cursos.Curso.CursoRepository;
 import dev.Cursos.cursos.User.dto.UserRequestDTO;
 import dev.Cursos.cursos.User.dto.UserResponseDTO;
 
@@ -10,10 +12,12 @@ import dev.Cursos.cursos.User.dto.UserResponseDTO;
 public class UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
+    private CursoRepository cursoRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, CursoRepository cursoRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.cursoRepository = cursoRepository;
     }
 
     public List<UserResponseDTO> getAllUsers() {
@@ -29,10 +33,22 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
     public UserResponseDTO createUser(UserRequestDTO dto) {
-        UserModel model = userMapper.toModel(dto);
-        UserModel saved = userRepository.save(model);
-        return userMapper.toResponse(saved);
+    UserModel user = userMapper.toModel(dto);
+
+    if (dto.cursoIds() != null && !dto.cursoIds().isEmpty()) {
+        List<CursoModel> cursos = cursoRepository.findAllById(dto.cursoIds());
+        user.setCursos(cursos);
+
+        for (CursoModel curso : cursos) {
+            if (!curso.getUsers().contains(user)) {
+                curso.getUsers().add(user);
+            }
+        }
     }
+    UserModel saved = userRepository.save(user);
+
+    return userMapper.toResponse(saved);
+}
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

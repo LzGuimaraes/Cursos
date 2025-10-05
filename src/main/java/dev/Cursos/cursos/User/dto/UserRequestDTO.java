@@ -1,4 +1,6 @@
 package dev.Cursos.cursos.User.dto;
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -15,5 +17,6 @@ public record UserRequestDTO(
     String email,
     @NotBlank(message = "A senha não pode estar em branco.")
     @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
-    String password
+    String password,
+    List<Long> cursoIds
 ) {}
