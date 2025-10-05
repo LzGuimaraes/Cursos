@@ -1,4 +1,3 @@
-// PostService.java
 package dev.Cursos.cursos.Post;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import dev.Cursos.cursos.Post.dto.PostResponseDTO;
 @Service
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final CursoRepository cursoRepository;
-    private final PostMapper postMapper;
+    private PostRepository postRepository;
+    private CursoRepository cursoRepository;
+    private PostMapper postMapper;
 
     public PostService(PostRepository postRepository, CursoRepository cursoRepository, PostMapper postMapper) {
         this.postRepository = postRepository;

@@ -1,47 +1,63 @@
 package dev.Cursos.cursos.Coment;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import dev.Cursos.cursos.Coment.dto.CommentRequestDTO;
+import dev.Cursos.cursos.Coment.dto.CommentResponseDTO;
+import dev.Cursos.cursos.Post.PostModel;
+import dev.Cursos.cursos.Post.PostRepository;
 
 
 @Service
 public class CommentService {
     private CommentRepository commentRepository;
     private CommentMapper commentMapper;
+    private PostRepository postRepository;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper CommentMapper) {
+    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper, PostRepository postRepository) {
         this.commentRepository = commentRepository;
-        this.commentMapper = CommentMapper;
+        this.commentMapper = commentMapper;
+        this.postRepository = postRepository;
     }
-    public List<CommentDTO> getAllComment(){
-        List<CommentModel> comments = commentRepository.findAll();
-        return comments.stream().map(commentMapper::map).collect(Collectors.toList());
+
+    public List<CommentResponseDTO> getAllComments() {
+        return commentRepository.findAll()
+                .stream()
+                .map(commentMapper::toResponse)
+                .collect(Collectors.toList());
     }
-    public CommentDTO getCommentById(Long id){
-        Optional<CommentModel> commentById = commentRepository.findById(id);
-        return commentById.map(commentMapper::map).orElse(null);
+
+    public CommentResponseDTO getCommentById(Long id) {
+        return commentRepository.findById(id)
+                .map(commentMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Comentário não encontrado"));
     }
-    public CommentDTO createComment(CommentDTO comment){
-        CommentModel commentModel = commentMapper.map(comment);
-        commentModel = commentRepository.save(commentModel);
-        return commentMapper.map(commentModel);
+    public CommentResponseDTO createComment(CommentRequestDTO dto) {
+        PostModel post = postRepository.findById(dto.postId())
+                .orElseThrow(() -> new RuntimeException("Post não encontrado"));
+
+        CommentModel comment = commentMapper.toModel(dto, post);
+        CommentModel saved = commentRepository.save(comment);
+        return commentMapper.toResponse(saved);
+    
     }
-    public void deleteComment(Long id, CommentModel newComment){
+
+    public CommentResponseDTO updateComment(Long id, CommentRequestDTO dto) {
+        CommentModel existing = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentário não encontrado"));
+
+        existing.setDescricao(dto.descricao());
+        CommentModel updated = commentRepository.save(existing);
+        return commentMapper.toResponse(updated);
+    }
+
+    public void deleteComment(Long id) {
+        if (!commentRepository.existsById(id)) {
+            throw new RuntimeException("Comentário não encontrado");
+        }
         commentRepository.deleteById(id);
     }
-
-    public CommentDTO alterComment(Long id, CommentDTO commentAtualizado){
-        Optional<CommentModel> existingComment = commentRepository.findById(id);
-        if (existingComment.isPresent()) {
-            CommentModel commentUpdated = commentMapper.map(commentAtualizado);
-            commentUpdated.setId_comment(id);
-            CommentModel commentSaved = commentRepository.save(commentUpdated);
-            return commentMapper.map(commentSaved);
-        }
-        return null;
-    }
-
 }
