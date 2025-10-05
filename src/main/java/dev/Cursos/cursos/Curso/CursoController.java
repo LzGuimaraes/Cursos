@@ -44,8 +44,8 @@ public class CursoController {
     }
 
     @PutMapping("alter/{id}")
-    public CursoResponseDTO alterCurso(@RequestBody Long id,@Valid @RequestBody CursoRequestDTO updatedCurso) {
-        return cursoService.alterCurso(id, updatedCurso);
+    public CursoResponseDTO patchCurso(@RequestBody Long id,@Valid @RequestBody CursoRequestDTO updatedCurso) {
+        return cursoService.patchCurso(id, updatedCurso);
     }
     @DeleteMapping("delete/{id}")
     public void deleteCurso(@PathVariable Long id) {

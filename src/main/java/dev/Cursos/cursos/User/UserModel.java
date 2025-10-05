@@ -42,5 +42,5 @@ public class UserModel {
     inverseJoinColumns = @JoinColumn(name = "curso_id"))
     @JsonIgnore
     private List<CursoModel> cursos;
-
 }
+

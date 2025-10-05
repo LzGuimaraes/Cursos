@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import dev.Cursos.cursos.Curso.CursoModel;
 import dev.Cursos.cursos.Curso.CursoRepository;
+import dev.Cursos.cursos.User.dto.UserPatchDTO;
 import dev.Cursos.cursos.User.dto.UserRequestDTO;
 import dev.Cursos.cursos.User.dto.UserResponseDTO;
 
@@ -48,20 +49,34 @@ public class UserService {
     UserModel saved = userRepository.save(user);
 
     return userMapper.toResponse(saved);
-}
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    public UserResponseDTO alterUser(Long id, UserRequestDTO dto) {
+
+    public UserResponseDTO patchUser(Long id, UserPatchDTO dto) {
         UserModel existing = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    
+    if (dto.nome() != null) existing.setNome(dto.nome());
+    if (dto.idade() != null) existing.setIdade(dto.idade());
+    if (dto.email() != null) existing.setEmail(dto.email());
+    if (dto.password() != null) existing.setPassword(dto.password());
 
-        existing.setNome(dto.nome());
-        existing.setIdade(dto.idade());
-        existing.setEmail(dto.email());
-        existing.setPassword(dto.password());
+    if (dto.cursoIds() != null && !dto.cursoIds().isEmpty()) {
+        List<CursoModel> cursos = cursoRepository.findAllById(dto.cursoIds());
+        existing.setCursos(cursos);
 
-        UserModel updated = userRepository.save(existing);
-        return userMapper.toResponse(updated);
+        for (CursoModel curso : cursos) {
+            if (!curso.getUsers().contains(existing)) {
+                curso.getUsers().add(existing);
+            }
+        }
     }
+
+    UserModel updated = userRepository.save(existing);
+    return userMapper.toResponse(updated);
+}
+
 }
