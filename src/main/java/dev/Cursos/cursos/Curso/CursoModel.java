@@ -2,6 +2,8 @@ package dev.Cursos.cursos.Curso;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +32,8 @@ public class CursoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_curso;
     private String nome;
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private StatusCurso status;
     private String descricao;
     
     @JsonIgnore

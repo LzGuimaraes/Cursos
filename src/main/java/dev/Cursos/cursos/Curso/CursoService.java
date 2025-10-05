@@ -1,10 +1,10 @@
 package dev.Cursos.cursos.Curso;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+
+import dev.Cursos.cursos.Curso.dto.CursoRequestDTO;
+import dev.Cursos.cursos.Curso.dto.CursoResponseDTO;
 
 @Service
 public class CursoService {
@@ -15,31 +15,30 @@ public class CursoService {
         this.cursoRepository = cursoRepository;
         this.cursoMapper = cursoMapper;
     }
-    public List<CursoDTO> getCurso(){
-        List<CursoModel> cursos = cursoRepository.findAll();
-        return cursos.stream().map(cursoMapper::map).collect(Collectors.toList());
+    public List<CursoResponseDTO> getCurso(){
+        return cursoRepository.findAll()
+        .stream()
+        .map(cursoMapper::toResponse)
+        .toList();
     }
 
-    public CursoDTO getCursoById(Long id){
-        Optional<CursoModel> cursoById = cursoRepository.findById(id);
-        return cursoById.map(cursoMapper::map).orElse(null);
+    public CursoResponseDTO getCursoById(Long id){
+        return cursoRepository.findById(id).map(cursoMapper::toResponse).orElseThrow(() -> new RuntimeException("Curso não encontrado"));
     }
-    public CursoDTO createCurso(CursoDTO curso){
-        CursoModel cursoModel = cursoMapper.map(curso);
-        cursoModel = cursoRepository.save(cursoModel);
-        return cursoMapper.map(cursoModel);
+    public CursoResponseDTO createCurso(CursoRequestDTO dto){
+        CursoModel model = cursoMapper.toModel(dto);
+        CursoModel saved = cursoRepository.save(model);
+        return cursoMapper.toResponse(saved);
     }
     public void deleteCurso(Long id){
         cursoRepository.deleteById(id);
     }
-    public CursoDTO alterCurso(Long id, CursoDTO updatedCurso){
-        Optional<CursoModel> existingCurso = cursoRepository.findById(id);
-        if (existingCurso.isPresent()) {
-            CursoModel cursoUpdated = cursoMapper.map(updatedCurso);
-            cursoUpdated.setId_curso(id);
-            CursoModel cursoSaved = cursoRepository.save(cursoUpdated);
-            return cursoMapper.map(cursoSaved);
-        }
-        return null;
+    public CursoResponseDTO alterCurso(Long id, CursoRequestDTO dto){
+        CursoModel existing = cursoRepository.findById(id).orElseThrow(()-> new RuntimeException("Curso não encontrado "));
+        existing.setNome(dto.nome());
+        existing.setDescricao(dto.descricao());
+            CursoModel cursoSaved = cursoRepository.save(existing);
+            return cursoMapper.toResponse(cursoSaved);
+        
     }
 }
