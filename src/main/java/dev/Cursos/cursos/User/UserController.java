@@ -49,7 +49,7 @@ public class UserController {
         @PathVariable Long id,
         @RequestBody UserPatchDTO dto) {
     return userService.patchUser(id, dto);
-}
+    }
     
     @DeleteMapping("delete/{id}")
     public void deleteUser(@PathVariable Long id) {

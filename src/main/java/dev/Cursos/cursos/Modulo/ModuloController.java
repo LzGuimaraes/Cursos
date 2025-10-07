@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
-
 @RestController
 @RequestMapping("/modulo")
 public class ModuloController {
@@ -48,5 +45,4 @@ public class ModuloController {
     public void deleteModulo(@PathVariable Long id) {
         moduloService.deleteModulo(id);
     }
-
 }

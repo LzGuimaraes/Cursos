@@ -36,6 +36,17 @@ CREATE TABLE tb_comments (
     CONSTRAINT fk_comments_post FOREIGN KEY(post_id) REFERENCES tb_posts(id_post)
 );
 
+-- Cria a tabela de módulos
+CREATE TABLE tb_modulo (
+    id_modulo BIGSERIAL PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    descricao TEXT,
+    ordem INT,
+    curso_id BIGINT,
+    CONSTRAINT fk_modulo_curso FOREIGN KEY (curso_id) REFERENCES tb_curso (id_curso)
+);
+
+
 -- Cria a tabela de junção para o relacionamento N-para-N entre usuários e cursos
 CREATE TABLE user_curso (
     user_id BIGINT NOT NULL,
