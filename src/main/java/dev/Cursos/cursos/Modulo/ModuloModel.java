@@ -1,8 +1,12 @@
 package dev.Cursos.cursos.Modulo;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import dev.Cursos.cursos.Aulas.AulasModel;
 import dev.Cursos.cursos.Curso.CursoModel;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +33,12 @@ public class ModuloModel {
     private String descricao;
     private Integer ordem;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AulasModel> aulas;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_curso")
+    @JoinColumn(name = "curso_id")
     @JsonIgnore
     private CursoModel curso;
 }
