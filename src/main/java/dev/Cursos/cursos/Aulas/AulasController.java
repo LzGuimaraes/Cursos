@@ -33,7 +33,7 @@ public class AulasController {
         return aulasService.getAllAulas();
     }
     
-    @GetMapping("path")
+    @GetMapping("/{id}")
     public AulasResponseDTO getAulasById(@PathVariable Long id) {
         return aulasService.getAulasById(id);
     }
