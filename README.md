@@ -57,7 +57,7 @@ Este projeto é um backend desenvolvido em Java utilizando Spring Boot, destinad
 
 ### Aulas
 - `GET /aulas/all` — Lista todas as aulas
-- `GET /aulas/path` — Consulta uma aula específica (nota: endpoint usa 'path' em vez de '{id}')
+- `GET /aulas/{id}` — Consulta uma aula específica
 - `POST /aulas/create` — Cria uma nova aula
 - `DELETE /aulas/delete/{id}` — Remove uma aula
 
@@ -127,4 +127,5 @@ Este projeto é um backend desenvolvido em Java utilizando Spring Boot, destinad
 Pull requests são bem-vindos! Para grandes mudanças, abra uma issue primeiro para discutir o que você gostaria de modificar.
 
 ## Licença
+
 Este projeto está sob licença MIT.
