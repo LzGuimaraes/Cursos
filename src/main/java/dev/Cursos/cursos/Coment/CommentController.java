@@ -1,7 +1,7 @@
 package dev.Cursos.cursos.Coment;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,9 +27,10 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-   @GetMapping("/all")
-    public List<CommentResponseDTO> getAllComments() {
-        return commentService.getAllComments();
+    @GetMapping("/all")
+    public ResponseEntity<Page<CommentResponseDTO>> getAllComments(Pageable pageable) {
+        Page<CommentResponseDTO> comment = commentService.getAllComments(pageable);
+        return ResponseEntity.ok(comment);
     }
 
     @GetMapping("/all/{id}")
@@ -44,7 +45,7 @@ public class CommentController {
     }
 
     @DeleteMapping("delete/{id}")
-    public void deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    public void deletePost(@PathVariable Long id) {
+        commentService.deletePost(id);
     }
 }

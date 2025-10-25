@@ -1,6 +1,9 @@
 package dev.Cursos.cursos.User;
 
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.Cursos.cursos.Curso.CursoModel;
@@ -8,6 +11,7 @@ import dev.Cursos.cursos.Curso.CursoRepository;
 import dev.Cursos.cursos.User.dto.UserPatchDTO;
 import dev.Cursos.cursos.User.dto.UserRequestDTO;
 import dev.Cursos.cursos.User.dto.UserResponseDTO;
+import dev.Cursos.cursos.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
@@ -21,18 +25,17 @@ public class UserService {
         this.cursoRepository = cursoRepository;
     }
 
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::toResponse)
-                .toList();
+    public Page<UserResponseDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toResponse);
     }
 
     public UserResponseDTO getUserById(Long id) {
        return userRepository.findById(id)
                 .map(userMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("User com ID " + id + " não encontrada."));
     }
+
     public UserResponseDTO createUser(UserRequestDTO dto) {
     UserModel user = userMapper.toModel(dto);
 
@@ -52,12 +55,15 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User com ID " + id + " não encontrada para exclusão.");
+        }
         userRepository.deleteById(id);
     }
 
     public UserResponseDTO patchUser(Long id, UserPatchDTO dto) {
         UserModel existing = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("User com ID " + id + " não encontrada."));
     
     if (dto.nome() != null) existing.setNome(dto.nome());
     if (dto.idade() != null) existing.setIdade(dto.idade());
@@ -77,6 +83,5 @@ public class UserService {
 
     UserModel updated = userRepository.save(existing);
     return userMapper.toResponse(updated);
-}
-
+    }
 }

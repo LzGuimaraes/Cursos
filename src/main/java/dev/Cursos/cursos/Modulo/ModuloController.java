@@ -7,8 +7,8 @@ import dev.Cursos.cursos.Modulo.dto.ModuloRequestDTO;
 import dev.Cursos.cursos.Modulo.dto.ModuloResponseDTO;
 import jakarta.validation.Valid;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +27,9 @@ public class ModuloController {
     }
 
     @GetMapping("/all")
-    public List<ModuloResponseDTO> getMethodName() {
-        return moduloService.getAllModulos();
+    public ResponseEntity<Page<ModuloResponseDTO>> getAllModulos(Pageable pageable) {
+        Page<ModuloResponseDTO> modulo = moduloService.getAllModulos(pageable);
+        return ResponseEntity.ok(modulo);
     }
 
     @GetMapping("/all/{id}")

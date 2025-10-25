@@ -1,7 +1,7 @@
 package dev.Cursos.cursos.Curso;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +28,9 @@ public class CursoController {
     }
 
     @GetMapping("/all")
-    public List<CursoResponseDTO> getCurso() {
-        return cursoService.getCurso();
+    public ResponseEntity<Page<CursoResponseDTO>> getAllCursos(Pageable pageable) {
+        Page<CursoResponseDTO> curso = cursoService.getAllCursos(pageable);
+        return ResponseEntity.ok(curso);
     }
 
     @GetMapping("/all/{id}")

@@ -8,7 +8,8 @@ import dev.Cursos.cursos.User.dto.UserRequestDTO;
 import dev.Cursos.cursos.User.dto.UserResponseDTO;
 import jakarta.validation.Valid;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,8 +30,9 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<UserResponseDTO> getUser() {
-        return userService.getAllUsers();
+    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(Pageable pageable) {
+        Page<UserResponseDTO> users = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/all/{id}")

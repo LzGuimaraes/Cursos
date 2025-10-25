@@ -1,7 +1,7 @@
 package dev.Cursos.cursos.Post;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +27,9 @@ public class PostController {
     }
 
     @GetMapping("/all")
-    public List<PostResponseDTO> getAllPost() {
-        return postService.getAllPosts();
+    public ResponseEntity<Page<PostResponseDTO>> getAllPosts(Pageable pageable) {
+        Page<PostResponseDTO> post = postService.getAllPosts(pageable);
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/all/{id}")

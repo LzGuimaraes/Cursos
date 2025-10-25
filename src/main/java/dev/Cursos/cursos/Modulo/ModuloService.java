@@ -1,13 +1,14 @@
 package dev.Cursos.cursos.Modulo;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.Cursos.cursos.Curso.CursoModel;
 import dev.Cursos.cursos.Curso.CursoRepository;
 import dev.Cursos.cursos.Modulo.dto.ModuloRequestDTO;
 import dev.Cursos.cursos.Modulo.dto.ModuloResponseDTO;
+import dev.Cursos.cursos.exceptions.ResourceNotFoundException;
 
 @Service
 public class ModuloService {
@@ -20,23 +21,20 @@ public class ModuloService {
         this.cursoRepository = cursoRepository;
         this.moduloMapper = moduloMapper;
     }
-
-    public List<ModuloResponseDTO> getAllModulos(){
-        return moduloRepository.findAll()
-                .stream()
-                .map(moduloMapper::toResponse)
-                .toList();
+    public Page<ModuloResponseDTO> getAllModulos(Pageable pageable) {
+        return moduloRepository.findAll(pageable)
+                .map(moduloMapper::toResponse);
     }
     
     public ModuloResponseDTO getModuloById(Long id) {
         return moduloRepository.findById(id)
                 .map(moduloMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Modulo não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Post com ID " + id + " não encontrada."));
     }
 
     public ModuloResponseDTO createModulo(ModuloRequestDTO dto) {
         CursoModel curso = cursoRepository.findById(dto.cursoId())
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso com ID " + dto.cursoId() + " não encontrado."));
 
         ModuloModel modulo = moduloMapper.toModel(dto, curso);
         ModuloModel saved = moduloRepository.save(modulo);
@@ -45,6 +43,9 @@ public class ModuloService {
     }
     
     public void deleteModulo(Long id) {
+        if(!moduloRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Modulo com ID " + id + " não encontrada para exclusão.");
+        }
         moduloRepository.deleteById(id);
     }
 

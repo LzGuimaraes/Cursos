@@ -1,12 +1,14 @@
 package dev.Cursos.cursos.Curso;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.Cursos.cursos.Curso.dto.CursoRequestDTO;
 import dev.Cursos.cursos.Curso.dto.CursoResponseDTO;
 import dev.Cursos.cursos.User.UserModel;
 import dev.Cursos.cursos.User.UserRepository;
+import dev.Cursos.cursos.exceptions.ResourceNotFoundException;
 @Service
 public class CursoService {
     private CursoRepository cursoRepository;
@@ -19,17 +21,15 @@ public class CursoService {
         this.userRepository = userRepository;
     }
 
-    public List<CursoResponseDTO> getCurso(){
-        return cursoRepository.findAll()
-        .stream()
-        .map(cursoMapper::toResponse)
-        .toList();
+    public Page<CursoResponseDTO> getAllCursos(Pageable pageable) {
+        return cursoRepository.findAll(pageable)
+                .map(cursoMapper::toResponse);
     }
 
     public CursoResponseDTO getCursoById(Long id){
         return cursoRepository.findById(id)
                 .map(cursoMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso com ID " + id + " não encontrada."));
     }
 
     public CursoResponseDTO createCurso(CursoRequestDTO dto){
@@ -37,7 +37,7 @@ public class CursoService {
 
         if(dto.id_user() != null){
             UserModel user = userRepository.findById(dto.id_user())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User com ID " + dto.id_user() + " não encontrado."));
             model.getUsers().add(user);
             user.getCursos().add(model);
         }
@@ -46,13 +46,16 @@ public class CursoService {
         return cursoMapper.toResponse(saved);
     }
 
-    public void deleteCurso(Long id){
+    public void deleteCurso(Long id) {
+        if (!cursoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Curso com ID " + id + " não encontrada para exclusão.");
+        }
         cursoRepository.deleteById(id);
     }
 
     public CursoResponseDTO patchCurso(Long id, CursoRequestDTO updatedCurso) {
     CursoModel existing = cursoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Curso com ID " + id + " não encontrado."));
 
     if (updatedCurso.estado() != null) {
         existing.setStatus(Enum.valueOf(StatusCurso.class, updatedCurso.estado()));
