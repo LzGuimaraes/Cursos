@@ -35,7 +35,7 @@ Este projeto é um backend desenvolvido em Java utilizando Spring Boot, destinad
 - `GET /users/all/{id}` — Consulta um usuário específico
 - `POST /users/create` — Cria um novo usuário
 - `PATCH /users/alter/{id}` — Atualiza um usuário
-- `DELETE /users/delete/{id}` — Remove um usuário (endpoint não implementado no controller)
+- `DELETE /users/delete/{id}` — Remove um usuário
 
 ### Posts
 - `GET /Post/all` — Lista todos os posts
@@ -129,3 +129,4 @@ Pull requests são bem-vindos! Para grandes mudanças, abra uma issue primeiro p
 ## Licença
 
 Este projeto está sob licença MIT.
+
